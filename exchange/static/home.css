@@ -1,0 +1,10 @@
+#home_orders {
+    /*width: 600px;*/
+    /*height: 600px;*/
+    /*border: 1px solid #c3c3c3;*/
+    display: -webkit-flex; /* Safari */
+    display: flex;
+}
+
+#sell_orders {order: 1;}
+#buy_orders  {order: 2;}

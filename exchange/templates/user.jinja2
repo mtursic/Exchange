@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Exchange</title>
+</head>
+<body>
+
+<div>
+    Welcome {{ user_data.username }} |
+    {% if view.logged_in != None %}
+    <a href="{{request.application_url}}/logout"> Logout</a>
+    {% endif %}
+</div>
+
+<p>
+Balance: <br>
+EUR: {{ user_data.eur }}<br>
+BTC: {{ user_data.btc }}
+</p>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet"
+          href=" {{ request.static_url('exchange:static/home.css') }}"/>
+    <title>Exchange</title>
+</head>
+<body>
+
+<div>
+    {% if  view.logged_in == None %}
+        <a href="{{ request.application_url }}/login">Log In</a>
+    {% endif %}
+    {% if view.logged_in != None %}
+        <a href="{{ request.application_url }}/logout">Logout</a>
+    {% endif %}
+</div>
+
+<h1>Hi there, trading time</h1>
+
+<div id="home_orders">
+
+    <div id="sell_orders">
+        <table>
+            <caption>Sell orders</caption>
+            <tr>
+                <th>Amount (BTC)</th>
+                <th>Price (EUR)</th>
+                <th>Total (EUR)</th>
+            </tr>
+            {% for order in sell_orders %}
+                <tr>
+                    <td>{{ order.total / order.price }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.total }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div id="buy_orders">
+        <table>
+            <caption>Buy orders</caption>
+            <tr>
+                <th>Amount (BTC)</th>
+                <th>Price (EUR)</th>
+                <th>Total (EUR)</th>
+            </tr>
+            {% for order in buy_orders %}
+                <tr>
+                    <td>{{ order.total / order.price }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.total }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
