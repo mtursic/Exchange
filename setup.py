@@ -10,22 +10,22 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'pyramid',
-	'pyramid_jinja2',
-    'pyramid_chameleon',
+    'pyramid_jinja2',
     'pyramid_debugtoolbar',
     'waitress',
     'bcrypt',
     'deform',
     'sqlalchemy',
     'pyramid_tm',
-    'zope.sqlalchemy'
-    ]
+    'zope.sqlalchemy',
+    'transaction'
+]
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat
     'pytest',  # includes virtualenv
     'pytest-cov',
-    ]
+]
 
 setup(name='Exchange',
       version='0.0',
@@ -50,8 +50,9 @@ setup(name='Exchange',
       install_requires=requires,
       entry_points="""\
       [paste.app_factory]
-      main = exchange:main
-      [console_scripts]
+      main = exchange:main                                                     
+      [console_scripts]             
       initialize_tutorial_db = exchange.initialize_db:main
+      # trader_script = exchange.trader:main       
       """,
       )

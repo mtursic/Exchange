@@ -8,3 +8,15 @@
 
 #sell_orders {order: 1;}
 #buy_orders  {order: 2;}
+
+#buy_sell_form {
+    /*width: 600px;*/
+    /*height: 600px;*/
+    /*border: 1px solid #c3c3c3;*/
+    display: -webkit-flex; /* Safari */
+    display: flex;
+}
+
+#user_orders {order: 1;}
+#buy_form {order: 2;}
+#sell_form  {order: 3;}

@@ -13,7 +13,6 @@ from exchange.models import (
     DBSession,
     Base,
     User,
-    ActiveOrder
     )
 
 

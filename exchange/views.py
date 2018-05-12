@@ -1,23 +1,22 @@
+from datetime import datetime
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import (
     remember,
     forget,
-    )
-
+)
 from pyramid.view import (
     view_config,
     view_defaults
-    )
-
+)
 from sqlalchemy import desc, func
 from sqlalchemy.sql import label
 
+from .models import DBSession, User, ActiveOrder
 from .security import (
     USERS,
     check_password
 )
-
-from .models import DBSession, User, ActiveOrder
 
 
 @view_defaults(renderer='templates/home.jinja2')
@@ -77,5 +76,55 @@ class TutorialViews:
 
     @view_config(route_name='user', renderer='templates/user.jinja2')
     def user_view(self):
+        request = self.request
         user_data = DBSession.query(User).filter_by(username=self.logged_in).one()
-        return {'user_data': user_data}
+        message = ''
+
+        if 'buy_form.submitted' in request.params:
+            buy_price = request.params['buy_price']
+            buy_amount = request.params['buy_amount']
+            message = 'Buy order placed for ' + buy_amount + ' BTC for ' + buy_price + ' EUR'
+
+            DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
+                                      type=ActiveOrder.BUY_ORDER,
+                                      amount=buy_amount,
+                                      price=buy_price,
+                                      user_id=user_data.id
+                                      ))
+
+            # return dict(message=message,
+            #             user_data=user_data)
+
+        if 'sell_form.submitted' in request.params:
+            sell_price = request.params['sell_price']
+            sell_amount = request.params['sell_amount']
+            message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
+
+            DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
+                                      type=ActiveOrder.SELL_ORDER,
+                                      amount=sell_amount,
+                                      price=sell_price,
+                                      user_id=user_data.id))
+
+            # return dict(message=message,
+            #             user_data=user_data)
+
+        user_orders = DBSession.query(ActiveOrder).filter_by(user_id=user_data.id, deleted=0).order_by(ActiveOrder.time)
+
+        return dict(
+            user_data=user_data,
+            url=request.application_url + '/user',
+            message=message,
+            user_orders=user_orders
+        )
+
+    @view_config(route_name='delete')
+    def delete_order(self):
+        request = self.request
+        order_id = int(self.request.matchdict['order_id'])
+        DBSession.delete(ActiveOrder(id=order_id))
+        #headers = forget(request)
+        url = request.route_url('user')
+        return HTTPFound(location='user',
+                         #headers=headers
+                         )

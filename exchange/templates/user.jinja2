@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet"
+          href=" {{ request.static_url('exchange:static/home.css') }}"/>
     <title>Exchange</title>
 </head>
 <body>
@@ -8,15 +10,77 @@
 <div>
     Welcome {{ user_data.username }} |
     {% if view.logged_in != None %}
-    <a href="{{request.application_url}}/logout"> Logout</a>
+        <a href="{{ request.application_url }}/logout"> Logout</a>
     {% endif %}
 </div>
 
 <p>
-Balance: <br>
-EUR: {{ user_data.eur }}<br>
-BTC: {{ user_data.btc }}
+    Balance EUR: {{ user_data.eur }} BTC: {{ user_data.btc }}
 </p>
+
+<div id="buy_sell_form">
+
+    <div id="user_orders">
+    <table>
+        <caption>My orders</caption>
+        <tr>
+            <th>Type</th>
+            <th>Price (EUR)</th>
+            <th>Amount (BTC)</th>
+        </tr>
+        {% for user_order in user_orders %}
+            <tr>
+                {% if user_order.type == 0 %}
+                    <td>BUY</td>
+                {% else %}
+                    <td>SELL</td>
+                {% endif %}
+                <td>{{ user_order.price }}</td>
+                <td>{{ user_order.amount }} <a href="{{ request.application_url }}/{{ user_order.id }}"> X</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+    <div id="buy_form">
+        BUY
+        <form action="{{ url }}" method="post">
+            {#            <input type="hidden" name="came_from"#}
+            {#                   value="{{ came_from }}"/>#}
+            <label for="buy_price">Price</label>
+            <input type="text" id="buy_price"
+                   name="buy_price"
+                   value="{{ buy_price }}"/><br/>
+            <label for="buy_amount">Amount</label>
+            <input type="text" id="buy_amount"
+                   name="buy_amount"
+                   value="{{ buy_amount }}"/><br/>
+            <input type="submit" name="buy_form.submitted"
+                   value="Buy"/>
+        </form>
+    </div>
+
+    <div id="sell_form">
+        SELL
+        <form action="{{ url }}" method="post">
+            <input type="hidden" name="came_from"
+                   value="{{ came_from }}"/>
+            <label for="sell_price">Price</label>
+            <input type="text" id="sell_price"
+                   name="sell_price"
+                   value="{{ sell_price }}"/><br/>
+            <label for="sell_amount">Amount</label>
+            <input type="text" id="sell_amount"
+                   name="sell_amount"
+                   value="{{ sell_amount }}"/><br/>
+            <input type="submit" name="sell_form.submitted"
+                   value="Sell"/>
+        </form>
+    </div>
+
+</div>
+
+{{ message }}
 
 </body>
 </html>
