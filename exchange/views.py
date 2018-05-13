@@ -27,12 +27,13 @@ class TutorialViews:
 
     @view_config(route_name='home')
     def home(self):
-        buy_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
-            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.BUY_ORDER, deleted=0).order_by(ActiveOrder.price)
-
-        sell_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
-            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.SELL_ORDER, deleted=0) \
+        buy_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price)\
+            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.BUY_ORDER, deleted=0)\
             .order_by(desc(ActiveOrder.price))
+
+        sell_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price)\
+            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.SELL_ORDER, deleted=0)\
+            .order_by(ActiveOrder.price)
 
         return {'buy_orders': buy_orders, 'sell_orders': sell_orders}
 
