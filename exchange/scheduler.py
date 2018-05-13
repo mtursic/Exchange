@@ -1,10 +1,10 @@
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from .trader import print_greetings
+from .trader import run_trader
 
 scheduler = BackgroundScheduler()
 scheduler.start()
-scheduler.add_job(print_greetings,
+scheduler.add_job(run_trader,
                   id='greetings',
                   name='test',
                   trigger='cron',
