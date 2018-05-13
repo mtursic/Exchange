@@ -120,11 +120,8 @@ class TutorialViews:
 
     @view_config(route_name='delete')
     def delete_order(self):
-        request = self.request
-        order_id = int(self.request.matchdict['order_id'])
-        DBSession.delete(ActiveOrder(id=order_id))
-        #headers = forget(request)
-        url = request.route_url('user')
-        return HTTPFound(location='user',
-                         #headers=headers
-                         )
+        order_id = self.request.matchdict['order_id']
+        DBSession.query(ActiveOrder).filter_by(id=order_id).delete()
+        # DBSession.query(ActiveOrder).filter_by(id=order_id).update({'deleted': True})
+
+        return HTTPFound(location='user')
