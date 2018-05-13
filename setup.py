@@ -18,7 +18,8 @@ requires = [
     'sqlalchemy',
     'pyramid_tm',
     'zope.sqlalchemy',
-    'transaction'
+    'transaction',
+    'apscheduler'
 ]
 
 tests_require = [

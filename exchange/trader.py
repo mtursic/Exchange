@@ -1,14 +1,11 @@
-from datetime import datetime
-
 from exchange import DBSession
 from exchange.models import User
 
 
-def run_trader():
-    print('Kwaj dej poj dej')
+def print_greetings():
+    user = DBSession.query(User).filter_by(id=1).one()
 
-    user = DBSession.query(User)
+    print("Happy Birthday " + user.username)
 
-    while True:
-        if datetime.now().timestamp() % 60000 == 0:
-            print('trade script execute')
+
+print_greetings()
