@@ -7,46 +7,23 @@
 </head>
 <body>
 
-<div>
+<div id="user_data">
     Welcome {{ user_data.username }} |
     {% if view.logged_in != None %}
+        <a href="{{ request.application_url }}/"> Home</a> |
         <a href="{{ request.application_url }}/logout"> Logout</a>
     {% endif %}
 </div>
 
 <p>
-    Balance EUR: {{ user_data.eur }} BTC: {{ user_data.btc }}
+<div id="user_balance"> Balance EUR: {{ user_data.eur }} BTC: {{ user_data.btc }}</div>
 </p>
 
-<div id="buy_sell_form">
-
-    <div id="user_orders">
-    <table>
-        <caption>My orders</caption>
-        <tr>
-            <th>Type</th>
-            <th>Price (EUR)</th>
-            <th>Amount (BTC)</th>
-        </tr>
-        {% for user_order in user_orders %}
-            <tr>
-                {% if user_order.type == 0 %}
-                    <td>BUY</td>
-                {% else %}
-                    <td>SELL</td>
-                {% endif %}
-                <td>{{ user_order.price }}</td>
-                <td>{{ user_order.amount }} <a href="{{ request.application_url }}/{{ user_order.id }}"> X</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-</div>
+<div id="buy_sell_wrapper">
 
     <div id="buy_form">
         BUY
         <form action="{{ url }}" method="post">
-            {#            <input type="hidden" name="came_from"#}
-            {#                   value="{{ came_from }}"/>#}
             <label for="buy_price">Price</label>
             <input type="text" id="buy_price"
                    name="buy_price"
@@ -77,6 +54,31 @@
                    value="Sell"/>
         </form>
     </div>
+
+</div>
+
+<div class="user_orders">
+    <table>
+        <caption>My orders</caption>
+        <tr>
+            <th>Type</th>
+            <th>Price (EUR)</th>
+            <th>Amount (BTC)</th>
+        </tr>
+        {% for user_order in user_orders %}
+            <tr>
+                {% if user_order.type == 0 %}
+                    <td>BUY</td>
+                {% else %}
+                    <td>SELL</td>
+                {% endif %}
+                <td>{{ user_order.price }}</td>
+                <td>{{ user_order.amount }}</td>
+                <td id="remove"><a href="{{ request.application_url }}/{{ user_order.id }}"> remove</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
 
 </div>
 

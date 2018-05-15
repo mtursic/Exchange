@@ -110,6 +110,3 @@ def run_trader():
                         DBSession.query(User).filter_by(id=buy_user_id) \
                             .update({'eur': buy_user.eur - sell_amount * buy_price,
                                      'btc': buy_user.btc + sell_amount})
-
-
-run_trader()

@@ -12,15 +12,16 @@
         <a href="{{ request.application_url }}/login">Log In</a>
     {% endif %}
     {% if view.logged_in != None %}
+        <a href="{{ request.application_url }}/user">Dashboard</a> |
         <a href="{{ request.application_url }}/logout">Logout</a>
     {% endif %}
 </div>
 
-<h1>Hi there, trading time</h1>
+<h1>BTC / EUR Exchange</h1>
 
 <div id="home_orders">
 
-    <div id="sell_orders">
+    <div class="user_orders" id="sell_orders">
         <table>
             <caption>Sell orders</caption>
             <tr>
@@ -37,7 +38,7 @@
             {% endfor %}
         </table>
     </div>
-    <div id="buy_orders">
+    <div class="user_orders" id="buy_orders">
         <table>
             <caption>Buy orders</caption>
             <tr>

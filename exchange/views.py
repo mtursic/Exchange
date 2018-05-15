@@ -18,6 +18,7 @@ from .security import (
     check_password
 )
 
+from trader import trader
 
 @view_defaults(renderer='templates/home.jinja2')
 class TutorialViews:
@@ -92,9 +93,7 @@ class TutorialViews:
                                       price=buy_price,
                                       user_id=user_data.id
                                       ))
-
-            # return dict(message=message,
-            #             user_data=user_data)
+            trader.run_trader()
 
         if 'sell_form.submitted' in request.params:
             sell_price = request.params['sell_price']
@@ -106,9 +105,7 @@ class TutorialViews:
                                       amount=sell_amount,
                                       price=sell_price,
                                       user_id=user_data.id))
-
-            # return dict(message=message,
-            #             user_data=user_data)
+            trader.run_trader()
 
         user_orders = DBSession.query(ActiveOrder).filter_by(user_id=user_data.id, deleted=0).order_by(ActiveOrder.time)
 
