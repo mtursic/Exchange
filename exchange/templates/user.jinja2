@@ -24,35 +24,35 @@
 <div id="buy_sell_wrapper">
 
     <div id="buy_form">
-        BUY
+        <b>BUY order</b>
         <form action="{{ url }}" method="post">
-            <label for="buy_price">Price</label>
+            <div class="form_label"><label for="buy_price">Price</label></div>
             <input type="text" id="buy_price"
                    name="buy_price"
                    value="{{ buy_price }}"/><br/>
-            <label for="buy_amount">Amount</label>
+            <div class="form_label"><label for="buy_amount">Amount</label></div>
             <input type="text" id="buy_amount"
                    name="buy_amount"
                    value="{{ buy_amount }}"/><br/>
-            <input type="submit" name="buy_form.submitted"
+            <input id="button" type="submit" name="buy_form.submitted"
                    value="Buy"/>
         </form>
     </div>
 
     <div id="sell_form">
-        SELL
+        <b>SELL order</b>
         <form action="{{ url }}" method="post">
-            <input type="hidden" name="came_from"
-                   value="{{ came_from }}"/>
-            <label for="sell_price">Price</label>
+            <div class="form_label"><label for="sell_price">Price</label></div>
             <input type="text" id="sell_price"
                    name="sell_price"
-                   value="{{ sell_price }}"/><br/>
-            <label for="sell_amount">Amount</label>
+                   value="{{ sell_price }}"/>
+            <br/>
+            <div class="form_label"><label for="sell_amount">Amount</label></div>
             <input type="text" id="sell_amount"
                    name="sell_amount"
-                   value="{{ sell_amount }}"/><br/>
-            <input type="submit" name="sell_form.submitted"
+                   value="{{ sell_amount }}"/>
+            <br/>
+            <input id="button" type="submit" name="sell_form.submitted"
                    value="Sell"/>
         </form>
     </div>
@@ -61,14 +61,14 @@
 
 <div class="user_orders">
     <table>
-        <caption>My orders</caption>
+        <caption id="table_name">My orders</caption>
         <tr>
             <th>Type</th>
             <th>Price (EUR)</th>
             <th>Amount (BTC)</th>
         </tr>
         {% for user_order in user_orders %}
-            <tr>
+            <tr id="data">
                 {% if user_order.type == 0 %}
                     <td>BUY</td>
                 {% else %}

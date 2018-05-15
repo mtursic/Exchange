@@ -23,14 +23,14 @@
 
     <div class="user_orders" id="sell_orders">
         <table>
-            <caption>Sell orders</caption>
+            <caption id="table_name">Sell orders</caption>
             <tr>
                 <th>Amount (BTC)</th>
                 <th>Price (EUR)</th>
                 <th>Total (EUR)</th>
             </tr>
             {% for order in sell_orders %}
-                <tr>
+                <tr id="data">
                     <td>{{ order.total }}</td>
                     <td>{{ order.price }}</td>
                     <td>{{ order.total * order.price }}</td>
@@ -40,14 +40,14 @@
     </div>
     <div class="user_orders" id="buy_orders">
         <table>
-            <caption>Buy orders</caption>
+            <caption id="table_name">Buy orders</caption>
             <tr>
                 <th>Amount (BTC)</th>
                 <th>Price (EUR)</th>
                 <th>Total (EUR)</th>
             </tr>
             {% for order in buy_orders %}
-                <tr>
+                <tr id="data">
                     <td>{{ order.total }}</td>
                     <td>{{ order.price }}</td>
                     <td>{{ order.total * order.price }}</td>

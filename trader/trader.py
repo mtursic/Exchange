@@ -70,9 +70,8 @@ def run_trader():
                             .update({'eur': sell_user.eur + (buy_price * sell_amount),
                                      'btc': sell_user.btc - sell_amount})
 
-                        # buy_amount -= sell_amount
-                        update_amount = buy_amount - sell_amount
-                        DBSession.query(ActiveOrder).filter_by(id=buy_order_id).update({'amount': update_amount})
+                        buy_amount -= sell_amount
+                        DBSession.query(ActiveOrder).filter_by(id=buy_order_id).update({'amount': buy_amount})
                         buy_user = DBSession.query(User).filter_by(id=buy_user_id).one()
                         DBSession.query(User).filter_by(id=buy_user_id) \
                             .update({'eur': buy_user.eur - sell_amount * buy_price,
@@ -98,8 +97,8 @@ def run_trader():
                     if sell_amount > buy_amount:
                         """
                         """
-                        update_amount = sell_amount - buy_amount
-                        DBSession.query(ActiveOrder).filter_by(id=sell_order_id).update({'amount': update_amount})
+                        sell_amount -= buy_amount
+                        DBSession.query(ActiveOrder).filter_by(id=sell_order_id).update({'amount': sell_amount})
                         sell_user = DBSession.query(User).filter_by(id=sell_user_id).one()
                         DBSession.query(User).filter_by(id=sell_user_id) \
                             .update({'eur': sell_user.eur + (sell_price * sell_amount),
