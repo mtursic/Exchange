@@ -31,9 +31,9 @@
             </tr>
             {% for order in sell_orders %}
                 <tr>
-                    <td>{{ order.total / order.price }}</td>
-                    <td>{{ order.price }}</td>
                     <td>{{ order.total }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.total * order.price }}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -48,9 +48,9 @@
             </tr>
             {% for order in buy_orders %}
                 <tr>
-                    <td>{{ order.total / order.price }}</td>
-                    <td>{{ order.price }}</td>
                     <td>{{ order.total }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.total * order.price }}</td>
                 </tr>
             {% endfor %}
         </table>

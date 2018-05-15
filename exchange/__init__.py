@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config
 from .models import DBSession, Base
 from .security import group_finder
 
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -19,7 +20,7 @@ def main(global_config, **settings):
 
     # Security policies
     authn_policy = AuthTktAuthenticationPolicy(
-        settings['tutorial.secret'], callback=group_finder,
+        settings['exchange.secret'], callback=group_finder,
         hashalg='sha512')
     authz_policy = ACLAuthorizationPolicy()
     config.set_authentication_policy(authn_policy)
