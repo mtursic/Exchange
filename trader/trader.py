@@ -53,16 +53,6 @@ def run_trader():
 
                     if sell_amount < buy_amount:
                         """
-                        Sell order deleted.
-                        Sell user balance:
-                            BTC: - sell_amount
-                            EUR:  + (buy_price * sell_amount) !!! sell price can be higher than buy
-                        
-                        Buy order updated:
-                            amount: buy_amount - sell_amount
-                        Buy user balance:
-                            BTC: + buy_amount - sell_amount
-                            EUR: - (buy_amount - sell_amount) * buy_price
                         """
                         DBSession.query(ActiveOrder).filter_by(id=sell_order_id).delete()
                         sell_user = DBSession.query(User).filter_by(id=sell_user_id).one()

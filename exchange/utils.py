@@ -37,4 +37,3 @@ def sell_data_valid(user_id, sell_price, sell_amount):
         return 'Not enough BTC to place this order'
 
     return ''
-

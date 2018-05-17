@@ -16,7 +16,7 @@
 </div>
 
 <p>
-<div id="user_balance">Balance EUR: {{ user_data.eur }} BTC: {{ user_data.btc }}</div>
+<div id="user_balance">Balance EUR: {{ balance_eur }} BTC: {{ balance_btc }}</div>
 </p>
 
 {% if view.message != '' %}
@@ -65,12 +65,14 @@
     <table>
         <caption id="table_name">My orders</caption>
         <tr>
+            <th>Date</th>
             <th>Type</th>
             <th>Price (EUR)</th>
             <th>Amount (BTC)</th>
         </tr>
         {% for user_order in user_orders %}
             <tr id="data">
+                <td>{{ user_order.id }}</td>
                 {% if user_order.type == 0 %}
                     <td>BUY</td>
                 {% else %}
@@ -78,7 +80,7 @@
                 {% endif %}
                 <td>{{ user_order.price }}</td>
                 <td>{{ user_order.amount }}</td>
-                <td id="remove"><a href="{{ request.application_url }}/{{ user_order.id }}"> remove</a></td>
+                <td id="remove"><a href="{{ request.application_url }}/delete/{{ user_order.id }}"> remove</a></td>
             </tr>
         {% endfor %}
     </table>
