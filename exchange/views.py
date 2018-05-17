@@ -19,12 +19,14 @@ from .security import (
 )
 
 from trader import trader
+from .utils import buy_data_valid
 
 @view_defaults(renderer='templates/home.jinja2')
 class TutorialViews:
     def __init__(self, request):
         self.request = request
         self.logged_in = request.authenticated_userid
+        self.message = ''
 
     @view_config(route_name='home')
     def home(self):
@@ -79,26 +81,34 @@ class TutorialViews:
     @view_config(route_name='user', renderer='templates/user.jinja2')
     def user_view(self):
         request = self.request
+
+        if self.logged_in is None:
+            return HTTPFound(location='home')
+
         user_data = DBSession.query(User).filter_by(username=self.logged_in).one()
-        message = ''
 
         if 'buy_form.submitted' in request.params:
+
             buy_price = request.params['buy_price']
             buy_amount = request.params['buy_amount']
-            message = 'Buy order placed for ' + buy_amount + ' BTC for ' + buy_price + ' EUR'
 
-            DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
-                                      type=ActiveOrder.BUY_ORDER,
-                                      amount=buy_amount,
-                                      price=buy_price,
-                                      user_id=user_data.id
-                                      ))
-            trader.run_trader()
+            self.message = buy_data_valid(user_data.id, buy_price, buy_amount)
+
+            if self.message == '':
+                DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
+                                          type=ActiveOrder.BUY_ORDER,
+                                          amount=buy_amount,
+                                          price=buy_price,
+                                          user_id=user_data.id
+                                          ))
+                message = 'Buy order placed for ' + buy_amount + ' BTC for ' + buy_price + ' EUR'
+                trader.run_trader()
 
         if 'sell_form.submitted' in request.params:
+
             sell_price = request.params['sell_price']
             sell_amount = request.params['sell_amount']
-            message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
+
 
             DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
                                       type=ActiveOrder.SELL_ORDER,
@@ -106,13 +116,14 @@ class TutorialViews:
                                       price=sell_price,
                                       user_id=user_data.id))
             trader.run_trader()
+            message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
 
         user_orders = DBSession.query(ActiveOrder).filter_by(user_id=user_data.id, deleted=0).order_by(ActiveOrder.time)
 
         return dict(
             user_data=user_data,
             url=request.application_url + '/user',
-            message=message,
+            message=self.message,
             user_orders=user_orders
         )
 

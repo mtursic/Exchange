@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet"
+          href=" {{ request.static_url('exchange:static/home.css') }}"/>
     <title>Quick Tutorial: ${name}</title>
 </head>
 <body>
@@ -10,19 +12,23 @@
 <h1>Login</h1>
 <span>{{ message }}</span>
 
-<form action="{{ url }}" method="post">
-    <input type="hidden" name="came_from"
-           value="{{ came_from }}"/>
-    <label for="login">Username</label>
-    <input type="text" id="login"
-           name="login"
-           value="{{ login }}"/><br/>
-    <label for="password">Password</label>
-    <input type="password" id="password"
-           name="password"
-           value="{{ password }}"/><br/>
-    <input type="submit" name="form.submitted"
-           value="Log In"/>
-</form>
+<div id="login_form">
+    <form action="{{ url }}" method="post">
+        <input type="hidden" name="came_from"
+               value="{{ came_from }}"/>
+        <div class="form_label"><label for="login">Username</label></div>
+        <input type="text" id="login"
+               name="login"
+               value="{{ login }}"/>
+        <br/>
+        <div class="form_label"><label for="password">Password</label></div>
+        <input type="password" id="password"
+               name="password"
+               value="{{ password }}"/>
+        <br/>
+        <input id="button" type="submit" name="form.submitted"
+               value="Log In"/>
+    </form>
+</div>
 </body>
 </html>

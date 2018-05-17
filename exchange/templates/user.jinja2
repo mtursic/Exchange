@@ -16,10 +16,12 @@
 </div>
 
 <p>
-<div id="user_balance"> Balance EUR: {{ user_data.eur }} BTC: {{ user_data.btc }}</div>
+<div id="user_balance">Balance EUR: {{ user_data.eur }} BTC: {{ user_data.btc }}</div>
 </p>
 
-<p>{{ message }}</p>
+{% if view.message != '' %}
+    <p><b>{{ message }}</b></p>
+{% endif %}
 
 <div id="buy_sell_wrapper">
 
@@ -27,7 +29,7 @@
         <b>BUY order</b>
         <form action="{{ url }}" method="post">
             <div class="form_label"><label for="buy_price">Price</label></div>
-            <input type="text" id="buy_price"
+            <input type="number" step="0.01" min="0.01" id="buy_price"
                    name="buy_price"
                    value="{{ buy_price }}"/><br/>
             <div class="form_label"><label for="buy_amount">Amount</label></div>
@@ -43,7 +45,7 @@
         <b>SELL order</b>
         <form action="{{ url }}" method="post">
             <div class="form_label"><label for="sell_price">Price</label></div>
-            <input type="text" id="sell_price"
+            <input type="number" step="0.01" min="0.01" id="sell_price"
                    name="sell_price"
                    value="{{ sell_price }}"/>
             <br/>
