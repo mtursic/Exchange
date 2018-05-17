@@ -19,7 +19,8 @@ from .security import (
 )
 
 from trader import trader
-from .utils import buy_data_valid
+from .utils import buy_data_valid, sell_data_valid
+
 
 @view_defaults(renderer='templates/home.jinja2')
 class TutorialViews:
@@ -30,12 +31,12 @@ class TutorialViews:
 
     @view_config(route_name='home')
     def home(self):
-        buy_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price)\
-            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.BUY_ORDER, deleted=0)\
+        buy_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
+            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.BUY_ORDER, deleted=0) \
             .order_by(desc(ActiveOrder.price))
 
-        sell_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price)\
-            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.SELL_ORDER, deleted=0)\
+        sell_orders = DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
+            .group_by(ActiveOrder.price).filter_by(type=ActiveOrder.SELL_ORDER, deleted=0) \
             .order_by(ActiveOrder.price)
 
         return {'buy_orders': buy_orders, 'sell_orders': sell_orders}
@@ -109,14 +110,19 @@ class TutorialViews:
             sell_price = request.params['sell_price']
             sell_amount = request.params['sell_amount']
 
+            self.message = sell_data_valid(user_data.id, sell_price, sell_amount)
 
-            DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
-                                      type=ActiveOrder.SELL_ORDER,
-                                      amount=sell_amount,
-                                      price=sell_price,
-                                      user_id=user_data.id))
-            trader.run_trader()
-            message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
+            if self.message == '':
+
+
+
+                DBSession.add(ActiveOrder(time=int(datetime.now().timestamp()),
+                                          type=ActiveOrder.SELL_ORDER,
+                                          amount=sell_amount,
+                                          price=sell_price,
+                                          user_id=user_data.id))
+                trader.run_trader()
+                message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
 
         user_orders = DBSession.query(ActiveOrder).filter_by(user_id=user_data.id, deleted=0).order_by(ActiveOrder.time)
 

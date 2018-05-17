@@ -6,7 +6,8 @@ from sqlalchemy import (
     Text,
     Boolean,
     SmallInteger,
-    ForeignKey
+    ForeignKey,
+    Float
     )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -35,8 +36,8 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(Text, unique=True)
-    eur = Column(Integer)
-    btc = Column(Integer)
+    eur = Column(Float)
+    btc = Column(Float)
 
 
 class ActiveOrder(Base):
@@ -48,8 +49,8 @@ class ActiveOrder(Base):
     id = Column(Integer, primary_key=True)
     time = Column(Integer, unique=True)
     type = Column(SmallInteger)
-    amount = Column(Integer)
-    price = Column(Integer)
+    amount = Column(Float)
+    price = Column(Float)
     deleted = Column(Boolean, default=False)
     user_id = foreign_key_column(None, Integer, "users.id")
 
