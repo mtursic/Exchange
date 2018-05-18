@@ -16,7 +16,6 @@ from .security import (
     USERS,
     check_password
 )
-from .utils import buy_data_valid, sell_data_valid
 
 
 @view_defaults(renderer='templates/home.jinja2')
@@ -76,11 +75,14 @@ class ExchangeViews:
         print('user view')
         request = self.request
         user_data = User.get_by_username(self.logged_in)
+        user_orders = ActiveOrder.filter_by_user_id_order_by_time(user_data.id)
 
         if 'buy_form.submitted' in request.params:
             buy_price = request.params['buy_price']
             buy_amount = request.params['buy_amount']
-            self.message = buy_data_valid(user_data.id, buy_price, buy_amount)
+
+            self.message = ActiveOrder.validate_order(user_data, user_orders, buy_price, buy_amount,
+                                                      ActiveOrder.BUY_ORDER)
 
             if self.message == '':
                 ActiveOrder.add(dict(time=int(datetime.now().timestamp()),
@@ -97,7 +99,8 @@ class ExchangeViews:
             sell_price = request.params['sell_price']
             sell_amount = request.params['sell_amount']
 
-            self.message = sell_data_valid(user_data.id, sell_price, sell_amount)
+            self.message = ActiveOrder.validate_order(user_data, user_orders, sell_price, sell_amount,
+                                                      ActiveOrder.SELL_ORDER)
 
             if self.message == '':
                 ActiveOrder.add(dict(time=int(datetime.now().timestamp()),
@@ -109,8 +112,6 @@ class ExchangeViews:
 
                 trader.run_trader()
                 self.message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
-
-        user_orders = ActiveOrder.filter_by_user_id_order_by_time(user_data.id)
 
         balance_eur = user_data.eur
         for buy_order in user_orders.filter_by(type=ActiveOrder.BUY_ORDER):
