@@ -126,11 +126,16 @@ class ExchangeViews:
         for sell_order in user_orders.filter_by(type=ActiveOrder.SELL_ORDER):
             balance_btc -= float(sell_order.amount)
 
+        buy_orders = ActiveOrder.sum_amount(ActiveOrder.BUY_ORDER)
+        sell_orders = ActiveOrder.sum_amount(ActiveOrder.SELL_ORDER)
+
         return dict(
             user_data=user_data,
             url=request.application_url + '/user',
             message=self.message,
             user_orders=user_orders,
+            buy_orders=buy_orders,
+            sell_orders=sell_orders,
             balance_eur=round(balance_eur, 8),
             balance_btc=round(balance_btc, 8)
         )

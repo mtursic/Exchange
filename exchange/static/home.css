@@ -1,13 +1,36 @@
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+#buy_sell_wrapper {
+    display: -webkit-flex;
+    display: flex;
+}
+
 #buy_form, #sell_form, #login_form  {
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
+#buy_form {
+    order: 1;
+    margin-right: 30px;
+}
+
+#sell_form {
+    order: 2;
+    margin-right: 30px;
+}
+
+#message_board {
+    margin-top: 20px;
+    order: 3;
+}
+
 .user_orders {
     border-collapse: collapse;
+    display: -webkit-flex;
+    display: flex;
 }
 
 .user_orders td, .user_orders th {
@@ -41,12 +64,12 @@ body {
 }
 
 #sell_orders {
-    order: 1;
+    order: 2;
     margin-right: 30px;
 }
 
 #buy_orders {
-    order: 2;
+    order: 3;
 }
 
 #table_name {
@@ -61,4 +84,9 @@ body {
 
 #button  {
     margin-top: 5px;
+}
+
+#my_trades {
+    oder: 1;
+    margin-right: 30px;
 }

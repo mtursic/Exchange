@@ -15,13 +15,10 @@
     {% endif %}
 </div>
 
-<p>
-<div id="user_balance">Balance EUR: {{ balance_eur }} BTC: {{ balance_btc }} | DB_EUR: {{ user_data.eur }} DB_BTC {{ user_data.btc }}</div>
-</p>
 
-{% if view.message != '' %}
-    <p><b>{{ message }}</b></p>
-{% endif %}
+<div id="user_balance"><p>Balance EUR: {{ balance_eur }} BTC: {{ balance_btc }} | DB_EUR: {{ user_data.eur }}
+    DB_BTC {{ user_data.btc }}</p></div>
+
 
 <div id="buy_sell_wrapper">
 
@@ -58,32 +55,74 @@
                    value="Sell"/>
         </form>
     </div>
+    <div id="message_board">
+        {% if view.message != '' %}
 
+            <b>Message:<p>{{ message }}</p></b>
+        {% endif %}
+    </div>
 </div>
 
 <div class="user_orders">
-    <table>
-        <caption id="table_name">My orders</caption>
-        <tr>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Price (EUR)</th>
-            <th>Amount (BTC)</th>
-        </tr>
-        {% for user_order in user_orders %}
-            <tr id="data">
-                <td>{{ user_order.id }}</td>
-                {% if user_order.type == 0 %}
-                    <td>BUY</td>
-                {% else %}
-                    <td>SELL</td>
-                {% endif %}
-                <td>{{ user_order.price }}</td>
-                <td>{{ user_order.amount }}</td>
-                <td id="remove"><a href="{{ request.application_url }}/delete/{{ user_order.id }}"> remove</a></td>
+
+    <div id="my_trades">
+        <table>
+            <caption id="table_name">My orders</caption>
+            <tr>
+                <th>Type</th>
+                <th>Price (EUR)</th>
+                <th>Amount (BTC)</th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for user_order in user_orders %}
+                <tr id="data">
+                    {% if user_order.type == 0 %}
+                        <td>BUY</td>
+                    {% else %}
+                        <td>SELL</td>
+                    {% endif %}
+                    <td>{{ user_order.price }}</td>
+                    <td>{{ user_order.amount }}</td>
+                    <td id="remove"><a href="{{ request.application_url }}/delete/{{ user_order.id }}"> remove</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="user_orders" id="sell_orders">
+        <table>
+            <caption id="table_name">Sell orders</caption>
+            <tr>
+                <th>Amount (BTC)</th>
+                <th>Price (EUR)</th>
+                <th>Total (EUR)</th>
+            </tr>
+            {% for order in sell_orders %}
+                <tr id="data">
+                    <td>{{ order.total }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.total * order.price }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="user_orders" id="buy_orders">
+        <table>
+            <caption id="table_name">Buy orders</caption>
+            <tr>
+                <th>Amount (BTC)</th>
+                <th>Price (EUR)</th>
+                <th>Total (EUR)</th>
+            </tr>
+            {% for order in buy_orders %}
+                <tr id="data">
+                    <td>{{ order.total }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.total * order.price }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
 </div>
 
 </div>
