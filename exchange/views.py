@@ -109,9 +109,9 @@ class ExchangeViews:
                                      price=sell_price,
                                      user_id=user_data.id
                                      ))
-
-                trader.run_trader()
                 self.message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
+                trader.run_trader()
+
 
         balance_eur = user_data.eur
         for buy_order in user_orders.filter_by(type=ActiveOrder.BUY_ORDER):
@@ -126,8 +126,8 @@ class ExchangeViews:
             url=request.application_url + '/user',
             message=self.message,
             user_orders=user_orders,
-            balance_eur=balance_eur,
-            balance_btc=balance_btc
+            balance_eur=round(balance_eur, 8),
+            balance_btc=round(balance_btc, 8)
         )
 
     @view_config(route_name='delete')
