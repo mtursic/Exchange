@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from pyramid.httpexceptions import HTTPFound
@@ -16,6 +17,8 @@ from .security import (
     USERS,
     check_password
 )
+
+log = logging.getLogger(__name__)
 
 
 @view_defaults(renderer='templates/home.jinja2')
@@ -72,7 +75,6 @@ class ExchangeViews:
 
     @view_config(route_name='user', renderer='templates/user.jinja2')
     def user_view(self):
-        print('user view')
         request = self.request
         user_data = User.get_by_username(self.logged_in)
         user_orders = ActiveOrder.filter_by_user_id_order_by_time(user_data.id)
@@ -85,15 +87,16 @@ class ExchangeViews:
                                                       ActiveOrder.BUY_ORDER)
 
             if self.message == '':
-                ActiveOrder.add(dict(time=int(datetime.now().timestamp()),
-                                     type=ActiveOrder.BUY_ORDER,
-                                     amount=buy_amount,
-                                     price=buy_price,
-                                     user_id=user_data.id
-                                     ))
+                ActiveOrder.add_new(dict(time=int(datetime.now().timestamp()),
+                                         type=ActiveOrder.BUY_ORDER,
+                                         amount=buy_amount,
+                                         price=buy_price,
+                                         user_id=user_data.id
+                                         ))
 
                 self.message = 'Buy order placed for ' + str(buy_amount) + ' BTC for ' + str(buy_price) + ' EUR'
                 trader.run_trader()
+                log.info('Trader triggered.')
 
         if 'sell_form.submitted' in request.params:
             sell_price = request.params['sell_price']
@@ -103,15 +106,15 @@ class ExchangeViews:
                                                       ActiveOrder.SELL_ORDER)
 
             if self.message == '':
-                ActiveOrder.add(dict(time=int(datetime.now().timestamp()),
-                                     type=ActiveOrder.SELL_ORDER,
-                                     amount=sell_amount,
-                                     price=sell_price,
-                                     user_id=user_data.id
-                                     ))
+                ActiveOrder.add_new(dict(time=int(datetime.now().timestamp()),
+                                         type=ActiveOrder.SELL_ORDER,
+                                         amount=sell_amount,
+                                         price=sell_price,
+                                         user_id=user_data.id
+                                         ))
                 self.message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR'
                 trader.run_trader()
-
+                log.info('Trader triggered.')
 
         balance_eur = user_data.eur
         for buy_order in user_orders.filter_by(type=ActiveOrder.BUY_ORDER):
@@ -132,6 +135,6 @@ class ExchangeViews:
 
     @view_config(route_name='delete')
     def delete_order(self):
-        print('delete_order view')
+        log.info("Delete order with id " + self.request.matchdict['order_id'])
         ActiveOrder.delete(self.request.matchdict['order_id'])
         return HTTPFound(location=self.request.application_url + '/user')

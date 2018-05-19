@@ -56,6 +56,7 @@ class User(Base):
 class ActiveOrder(Base):
     BUY_ORDER = 0
     SELL_ORDER = 1
+    FEE = 0.0025
 
     __tablename__ = 'active_orders'
     id = Column(Integer, primary_key=True)
@@ -67,7 +68,7 @@ class ActiveOrder(Base):
     user_id = foreign_key_column(None, Integer, "users.id")
 
     @staticmethod
-    def add(data):
+    def add_new(data):
         return DBSession.add(ActiveOrder(time=data['time'],
                                          type=data['type'],
                                          amount=data['amount'],
@@ -82,8 +83,12 @@ class ActiveOrder(Base):
         return DBSession.query(ActiveOrder).filter_by(user_id=user_id, deleted=False).order_by(ActiveOrder.time)
 
     def sum_amount(type):
-        return DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
-            .group_by(ActiveOrder.price).filter_by(type=type, deleted=False).order_by(desc(ActiveOrder.price))
+        if type == ActiveOrder.BUY_ORDER:
+            return DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
+                .group_by(ActiveOrder.price).filter_by(type=type, deleted=False).order_by(desc(ActiveOrder.price))
+        else:
+            return DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
+                .group_by(ActiveOrder.price).filter_by(type=type, deleted=False).order_by(ActiveOrder.price)
 
     def filter_order_by_desc_price_time(type):
         return DBSession.query(ActiveOrder).filter_by(type=type, deleted=False).order_by(desc(ActiveOrder.price),
@@ -109,27 +114,28 @@ class ActiveOrder(Base):
 
         if type == ActiveOrder.BUY_ORDER:
 
-            if sell_orders.filter_by(price=price).first():
+            if sell_orders.filter_by(price=float(price)).first():
                 return 'Self trading is not allowed. Sell order with price ' + str(price) + ' exists'
 
             balance_eur = user_data.eur - float(price) * float(amount)
             for buy_order in buy_orders:
                 balance_eur -= buy_order.price * buy_order.amount
 
-            # FEE check needs to be added here
+            fee = float(price) * float(amount) * ActiveOrder.FEE
+
+            # if balance_eur - fee < 0:
             if balance_eur < 0:
-                return 'Not enough EUR to place this order'
+                return 'Not enough EUR to place this order. Fee is ' + str(fee) + ' EUR.'
 
         elif type == ActiveOrder.SELL_ORDER:
 
-            if buy_orders.filter_by(price=price).first():
+            if buy_orders.filter_by(price=float(price)).first():
                 return 'Self trading is not allowed. Buy order with price ' + str(price) + ' exists'
 
             balance_btc = user_data.btc - float(amount)
             for sell_order in sell_orders:
                 balance_btc -= sell_order.amount
 
-            # FEE check needs to be added
             if balance_btc < 0:
                 return 'Not enough BTC to place this order'
 
