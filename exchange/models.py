@@ -38,17 +38,19 @@ class User(Base):
     eur = Column(Float)
     btc = Column(Float)
 
-    @staticmethod
     def get_by_username(username):
         return DBSession.query(User).filter_by(username=username).one()
 
-    @staticmethod
     def get_by_id(id):
         return DBSession.query(User).filter_by(id=id).one()
 
-    @staticmethod
-    def update_balance(user_id, balance):
-        return DBSession.query(User).filter_by(id=user_id).update(eur=balance['eur'], btc=balance['btc'])
+    def update_balance_on_buy(id, balance):
+        return DBSession.query(User).filter(User.id == id).update(
+            {'eur': (User.eur - balance['eur']), 'btc': (User.btc + balance['btc'])})
+
+    def update_balance_on_sell(id, balance):
+        return DBSession.query(User).filter(User.id == id).update(
+            {'eur': (User.eur + balance['eur']), 'btc': (User.btc - balance['btc'])})
 
 
 class ActiveOrder(Base):
@@ -73,15 +75,12 @@ class ActiveOrder(Base):
                                          user_id=data['user_id']
                                          ))
 
-    @staticmethod
     def delete(id):
         return DBSession.query(ActiveOrder).filter_by(id=id).delete()
 
-    @staticmethod
     def filter_by_user_id_order_by_time(user_id):
         return DBSession.query(ActiveOrder).filter_by(user_id=user_id, deleted=False).order_by(ActiveOrder.time)
 
-    @staticmethod
     def sum_amount(type):
         return DBSession.query(ActiveOrder, label('total', func.sum(ActiveOrder.amount)), ActiveOrder.price) \
             .group_by(ActiveOrder.price).filter_by(type=type, deleted=False).order_by(desc(ActiveOrder.price))
@@ -94,13 +93,12 @@ class ActiveOrder(Base):
         return DBSession.query(ActiveOrder).filter(ActiveOrder.price <= max_price) \
             .filter_by(type=type, deleted=False).order_by(ActiveOrder.price, ActiveOrder.time)
 
-    def delete(order_id):
-        return DBSession.query(ActiveOrder).filter_by(id=order_id).delete()
+    def delete(id):
+        return DBSession.query(ActiveOrder).filter_by(id=id).delete()
 
     def update(id, amount):
-        return DBSession.query(ActiveOrder).filter_by(id=id).update(amount=amount)
+        return DBSession.query(ActiveOrder).filter_by(id=id).update({ActiveOrder.amount: round(amount, 8)})
 
-    @staticmethod
     def validate_order(user_data, orders, price, amount, type):
 
         if price == '' or amount == '':
@@ -114,9 +112,9 @@ class ActiveOrder(Base):
             if sell_orders.filter_by(price=price).first():
                 return 'Self trading is not allowed. Sell order with price ' + str(price) + ' exists'
 
-            balance_eur = user_data.eur
+            balance_eur = user_data.eur - float(price) * float(amount)
             for buy_order in buy_orders:
-                balance_eur -= float(buy_order.price) * float(buy_order.amount)
+                balance_eur -= buy_order.price * buy_order.amount
 
             # FEE check needs to be added here
             if balance_eur < 0:
@@ -127,13 +125,13 @@ class ActiveOrder(Base):
             if buy_orders.filter_by(price=price).first():
                 return 'Self trading is not allowed. Buy order with price ' + str(price) + ' exists'
 
-            balance_btc = user_data.btc
+            balance_btc = user_data.btc - float(amount)
             for sell_order in sell_orders:
-                balance_btc -= float(sell_order.amount)
+                balance_btc -= sell_order.amount
 
             # FEE check needs to be added
             if balance_btc < 0:
-                return 'Not enough EUR to place this order'
+                return 'Not enough BTC to place this order'
 
         return ''
 

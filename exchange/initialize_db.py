@@ -1,19 +1,18 @@
 import os
 import sys
+
 import transaction
-
-from sqlalchemy import engine_from_config
-
 from pyramid.paster import (
     get_appsettings,
     setup_logging,
-    )
+)
+from sqlalchemy import engine_from_config
 
 from exchange.models import (
     DBSession,
     Base,
     User,
-    )
+)
 
 
 def usage(argv):
@@ -33,7 +32,7 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model_user1 = User(username='user1', eur=1000, btc=10)
-        model_user2 = User(username='user2', eur=2000, btc=5)
+        model_user1 = User(username='user1', eur=1000, btc=100)
+        model_user2 = User(username='user2', eur=1000, btc=100)
         DBSession.add(model_user1)
         DBSession.add(model_user2)

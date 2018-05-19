@@ -50,29 +50,25 @@ def run_trader():
                         """
                         """
                         ActiveOrder.delete(sell_order_id)
-                        sell_user = User.get_by_id(sell_user_id)
-                        User.update_balance(sell_user_id, dict(eur=sell_user.eur + (buy_price * sell_amount),
-                                                               btc=sell_user.btc - sell_amount))
+                        User.update_balance_on_sell(sell_user_id, dict(eur=round(buy_price * sell_amount, 8),
+                                                                       btc=round(sell_amount, 8)))
 
                         buy_amount -= sell_amount
                         ActiveOrder.update(buy_order_id, buy_amount)
-                        buy_user = User.get_by_id(buy_user_id)
-                        User.update_balance(buy_user_id, dict(eur=buy_user.eur - sell_amount * buy_price,
-                                                              btc=buy_user.btc + sell_amount))
+                        User.update_balance_on_buy(buy_user_id, dict(eur=round(sell_amount * buy_price, 8),
+                                                                     btc=round(sell_amount, 8)))
                         break
 
                     if sell_amount == buy_amount:
                         """
                         """
                         ActiveOrder.delete(sell_order_id)
-                        sell_user = User.get_by_id(sell_user_id)
-                        User.update_balance(sell_user_id, dict(eur=sell_user.eur + (sell_price * sell_amount),
-                                                               btc=sell_user.btc - sell_amount))
+                        User.update_balance_on_sell(sell_user_id, dict(eur=round(sell_price * sell_amount, 8),
+                                                                       btc=round(sell_amount, 8)))
 
                         ActiveOrder.delete(buy_order_id)
-                        buy_user = User.get_by_id(buy_user_id)
-                        User.update_balance(buy_user_id, dict(eur=buy_user.eur - buy_amount * buy_price,
-                                                              btc=buy_user.btc + buy_amount))
+                        User.update_balance_on_buy(buy_user_id, dict(eur=round(buy_amount * buy_price, 8),
+                                                                     btc=round(buy_amount, 8)))
                         break
 
                     if sell_amount > buy_amount:
@@ -80,11 +76,9 @@ def run_trader():
                         """
                         sell_amount -= buy_amount
                         ActiveOrder.update(sell_order_id, sell_amount)
-                        sell_user = User.get_by_id(sell_user_id)
-                        User.update_balance(sell_user_id, dict(eur=sell_user.eur + (sell_price * sell_amount),
-                                                               btc=sell_user.btc - sell_amount))
+                        User.update_balance_on_sell(sell_user_id, dict(eur=round(sell_price * sell_amount, 8),
+                                                                       btc=round(sell_amount, 8)))
 
                         ActiveOrder.delete(buy_order_id)
-                        buy_user = User.get_by_id(buy_user_id)
-                        User.update_balance(buy_user_id, dict(eur=buy_user.eur - sell_amount * buy_price,
-                                                              btc=buy_user.btc + sell_amount))
+                        User.update_balance_on_buy(buy_user_id, dict(eur=round(sell_amount * buy_price, 8),
+                                                                     btc=round(sell_amount, 8)))
