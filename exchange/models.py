@@ -46,11 +46,11 @@ class User(Base):
 
     def update_balance_on_buy(id, balance):
         return DBSession.query(User).filter(User.id == id).update(
-            {'eur': (User.eur - balance['eur']), 'btc': (User.btc + balance['btc'])})
+            {'eur': (User.eur - balance['eur'] - balance['fee']), 'btc': (User.btc + balance['btc'])})
 
     def update_balance_on_sell(id, balance):
         return DBSession.query(User).filter(User.id == id).update(
-            {'eur': (User.eur + balance['eur']), 'btc': (User.btc - balance['btc'])})
+            {'eur': (User.eur + balance['eur'] - balance['fee']), 'btc': (User.btc - balance['btc'])})
 
 
 class ActiveOrder(Base):
@@ -117,15 +117,14 @@ class ActiveOrder(Base):
             if sell_orders.filter_by(price=float(price)).first():
                 return 'Self trading is not allowed. Sell order with price ' + str(price) + ' exists'
 
-            balance_eur = user_data.eur - float(price) * float(amount)
+            order_fee = float(price) * float(amount) * ActiveOrder.FEE
+            balance_eur = user_data.eur - float(price) * float(amount) - order_fee
             for buy_order in buy_orders:
-                balance_eur -= buy_order.price * buy_order.amount
+                fee = buy_order.price * buy_order.amount * ActiveOrder.FEE
+                balance_eur -= buy_order.price * buy_order.amount - fee
 
-            fee = float(price) * float(amount) * ActiveOrder.FEE
-
-            # if balance_eur - fee < 0:
             if balance_eur < 0:
-                return 'Not enough EUR to place this order. Fee is ' + str(fee) + ' EUR.'
+                return 'Not enough EUR to place this order. Fee is ' + str(order_fee) + ' EUR.'
 
         elif type == ActiveOrder.SELL_ORDER:
 
