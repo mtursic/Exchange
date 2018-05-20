@@ -1,6 +1,6 @@
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from exchange.trader import run_trader
+from trader.trader import run_trader
 
 scheduler = BackgroundScheduler()
 scheduler.start()

@@ -10,3 +10,7 @@ Getting Started
 
 - $VENV/bin/pserve development.ini
 
+- $VENV/bin/initialize_tutorial_db.exe development.ini
+
+Info
+---------------
