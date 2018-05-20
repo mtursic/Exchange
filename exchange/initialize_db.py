@@ -32,7 +32,7 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model_user1 = User(username='user1', eur=1000, btc=100)
-        model_user2 = User(username='user2', eur=1000, btc=100)
+        model_user1 = User(username='user1', eur=10000, btc=10)
+        model_user2 = User(username='user2', eur=10000, btc=10)
         DBSession.add(model_user1)
         DBSession.add(model_user2)
