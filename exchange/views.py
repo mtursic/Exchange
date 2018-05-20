@@ -11,7 +11,6 @@ from pyramid.view import (
     view_defaults
 )
 
-from trader import trader
 from .models import User, ActiveOrder
 from .security import (
     USERS,
@@ -96,8 +95,6 @@ class ExchangeViews:
 
                 self.message = 'Buy order placed for ' + buy_amount + ' BTC for ' + buy_price + \
                                ' EUR. Fee is ' + str(float(buy_amount) * float(buy_price) * ActiveOrder.FEE) + ' EUR.'
-                trader.run_trader()
-                log.info('Trader triggered.')
 
         if 'sell_form.submitted' in request.params:
             sell_price = request.params['sell_price']
@@ -115,8 +112,6 @@ class ExchangeViews:
                                          ))
                 self.message = 'Sell order placed for ' + sell_amount + ' BTC for ' + sell_price + ' EUR. Fee is ' + \
                                str(float(sell_amount) * float(sell_price) * ActiveOrder.FEE) + ' EUR.'
-                trader.run_trader()
-                log.info('Trader triggered.')
 
         balance_eur = user_data.eur
         for buy_order in user_orders.filter_by(type=ActiveOrder.BUY_ORDER):
