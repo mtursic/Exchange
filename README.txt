@@ -14,3 +14,11 @@ Getting Started
 
 Info
 ---------------
+There are two users predefined to login into the exchange.
+Authentication data:
+username:
+- 'user1', password: 'user1'
+- 'user2', password: 'user2'
+
+On front page there are active buy and sell orders. When user login, he is redirected to user 'dashboard' page where
+he can place and remove his orders.
